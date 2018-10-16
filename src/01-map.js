@@ -30,7 +30,7 @@ Promise.all([
 function ready([json, datapoints]) {
   let countries = topojson.feature(json, json.objects.countries)
 
-  colorScale.domain(d3.extent(datapoints, d => +d.population))
+  // colorScale.domain(d3.extent(datapoints, d => +d.population))
 
   svg
     .selectAll('.country')
