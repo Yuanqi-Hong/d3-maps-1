@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 Build a CSV named flights.csv from http://nonstopfrom.com/new-york-jfk/ with the column names 'airport,code,airlines'
 
 
@@ -256,7 +250,7 @@ When you're drawing your flight paths, you'll need to build some custom geojson.
 
 
 
-To ge tthe lat/lon of the destination airports, you'll need to use a d3.map() - we called ours CoordinateStore when we did it in class, you'll probably do just about the exact same thing!
+To get the lat/lng of the destination airports, you'll need to use a d3.map() - we called ours CoordinateStore when we did it in class, you'll probably do just about the exact same thing!
 
 
 

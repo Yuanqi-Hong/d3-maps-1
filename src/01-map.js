@@ -30,7 +30,14 @@ Promise.all([
 function ready([json, datapoints]) {
   let countries = topojson.feature(json, json.objects.countries)
 
-  colorScale.domain(d3.extent(datapoints, d => +d.population))
+  // if you do this:
+  // colorScale.domain(d3.extent(datapoints, d => +d.population))
+  // then almost all the cities except the super large ones
+  // will be of the same color
+  // so set the domain manually to give not-crazily-large cities a shot
+  // and then also set .clamp to be true so that
+  // d3 doesn't make bad extrapolations for you
+  colorScale.domain([0,700000]).clamp(true)
 
   svg
     .selectAll('.country')
@@ -46,7 +53,7 @@ function ready([json, datapoints]) {
     .datum(graticule())
     .attr('d', path)
     .attr('stroke', 'gray')
-    .attr('stroke-width', 0.6)
+    .attr('stroke-width', 0.5)
     .lower()
 
   svg
@@ -55,7 +62,7 @@ function ready([json, datapoints]) {
     .enter()
     .append('circle')
     .attr('class', 'city')
-    .attr('r', 1)
+    .attr('r', 0.8)
     .attr('transform', d => `translate(${projection([d.lng, d.lat])})`)
     .attr('fill', d => colorScale(d.population))
 }
