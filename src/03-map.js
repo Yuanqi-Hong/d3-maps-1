@@ -123,6 +123,7 @@ function ready([hexFile, datapoints]) {
         .attr('alignment-baseline', 'middle')
         .attr('font-weight', 'bold')
         .attr('font-size', 16)
+        .style('text-shadow', 'black 1px 1px 1px')
     })
     .on('mouseover', function(d) {
       d3.select(this)

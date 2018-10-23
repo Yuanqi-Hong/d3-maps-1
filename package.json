@@ -33,6 +33,8 @@
     "@turf/turf": "^5.1.6",
     "babel-preset-env": "^1.7.0",
     "d3": "^5.7.0",
+    "d3-composite-projections": "^1.2.0",
+    "d3-geo": "^1.11.1",
     "d3-geo-projection": "^2.4.1",
     "jest": "^23.6.0",
     "node-fetch": "^2.2.0",
