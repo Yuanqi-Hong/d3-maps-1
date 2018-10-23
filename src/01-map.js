@@ -37,6 +37,7 @@ function ready([json, datapoints]) {
   // so set the domain manually to give not-crazily-large cities a shot
   // and then also set .clamp to be true so that
   // d3 doesn't make bad extrapolations for you
+  // to be exact, clamp forces the output to be within the range
   colorScale.domain([0,700000]).clamp(true)
 
   svg

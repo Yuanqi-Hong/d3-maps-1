@@ -1,15 +1,16 @@
 import * as d3 from 'd3'
 import * as topojson from 'topojson'
 
-let margin = { top: 0, left: 0, right: 0, bottom: 0 }
-let height = 500 - margin.top - margin.bottom
-let width = 900 - margin.left - margin.right
+let margin = { top: 5, left: 5, right: 5, bottom: 5 }
+let height = 510 - margin.top - margin.bottom
+let width = 910 - margin.left - margin.right
 
 let svg = d3
   .select('#chart-4a')
   .append('svg')
   .attr('height', height + margin.top + margin.bottom)
   .attr('width', width + margin.left + margin.right)
+  .style('background-color', '#101010')
   .append('g')
   .attr('transform', `translate(${margin.left},${margin.top})`)
 
@@ -22,7 +23,7 @@ let path = d3.geoPath().projection(projection)
 
 let colorScale = d3.scaleSequential(d3.interpolateRdBu)
 
-let opacityScale = d3.scaleLinear().range([0, 1])
+let opacityScale = d3.scaleLinear().range([0.4, 1])
 
 d3.json(require('./data/counties_with_election_data.topojson'))
   .then(ready)
@@ -46,6 +47,12 @@ function ready(json) {
   )
   let sum = totalVotesArray.reduce((a, b) => a + b, 0)
 
+  let maxPercent = d3.max(
+    counties.features,
+    d => (d.properties.clinton + d.properties.trump) / sum
+  )
+  opacityScale.domain([0, maxPercent])
+
   svg
     .selectAll('.county')
     .data(counties.features)
@@ -56,7 +63,13 @@ function ready(json) {
     .attr('fill', d => {
       if (d.properties.state) {
         return colorScale(d.properties.clinton - d.properties.trump)
+      } else {
+        return '#666666'
       }
     })
-    .attr('opacity', d => opacityScale(d.margin))
+    .attr('opacity', d => {
+      if (d.properties.state) {
+        return opacityScale((d.properties.clinton + d.properties.trump) / sum)
+      }
+    })
 }
