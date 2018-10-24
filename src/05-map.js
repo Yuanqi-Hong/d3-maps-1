@@ -1,9 +1,9 @@
 import * as d3 from 'd3'
 import * as topojson from 'topojson'
 
-let margin = { top: 0, left: 10, right: 0, bottom: 0 }
+let margin = { top: 0, left: 100, right: 0, bottom: 0 }
 let height = 500 - margin.top - margin.bottom
-let width = 910 - margin.left - margin.right
+let width = 1000 - margin.left - margin.right
 
 let svg = d3
   .select('#chart-5')
@@ -43,11 +43,17 @@ Promise.all([
   .catch(err => console.log('Failed on', err))
 
 function ready([json, datapoints]) {
-  console.log(datapoints)
   let states = topojson.feature(json, json.objects.us_states)
   projection.fitSize([width, height], states)
 
   radiusScale.domain(d3.extent(datapoints, d => d.Total_MW))
+
+  let nested = d3
+    .nest()
+    .key(d => d.PrimSource)
+    .entries(datapoints)
+
+  colorScale.domain(nested, d => d.key)
 
   svg
     .selectAll('.state')
@@ -72,36 +78,51 @@ function ready([json, datapoints]) {
     .attr('fill', d => colorScale(d.PrimSource))
     .attr('opacity', 0.5)
 
-  let legend = svg.append('g').attr('transform','translate(50,50)')
+  let legend = svg.append('g').attr('transform','translate(-60,60)')
 
   legend
     .selectAll('.legend-entry')
     .data(nested)
     .enter()
     .append('g')
-    .attr('transform', (d, i) => `translate(0,${i * 20})`)
+    .attr('transform', (d, i) => `translate(0,${i * 30})`)
     .attr('class', 'legend-entry')
     .each(function(d) {
       let g = d3.select(this)
 
       g.append('circle')
-        .attr('r', 5)
+        .attr('r', 6)
         .attr('cx', 0)
         .attr('cy', 0)
         .attr('fill', colorScale(d.key))
 
       g.append('text')
-        .text(d.key)
-        .attr('dx', 10)
+        .attr('dx', 12)
         .attr('alignment-baseline','middle')
-
-      g.append('rect')
-        .attr('x', -8)
-        .attr('y', -9)
-        .attr('width', 370)
-        .attr('height', 14)
-        .attr('fill', '#fcfcfc')
-        .lower()
-
+        .attr('font-size', 14)
+        .text(d.key)
     })
+
+  svg
+    .selectAll('.state-label')
+    .data(states.features)
+    .enter()
+    .append('text')
+    .attr('class', 'state-label')
+    .attr('transform', d => {
+      let coords = projection(d3.geoCentroid(d))
+      return `translate(${coords})`
+    })
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .attr('font-size', 16)
+    .attr('stroke', 'none')
+    .attr('fill', d => {
+      if (d.properties.postal==='HI') {
+        return '#101010'
+      } else {
+        return '#e0e0e0'
+      }
+    })
+    .text(d => d.properties.postal)
 }
