@@ -64,7 +64,7 @@ function ready(json) {
       if (d.properties.state) {
         return colorScale(d.properties.clinton - d.properties.trump)
       } else {
-        return '#666666'
+        return '#606060'
       }
     })
     .attr('opacity', d => {

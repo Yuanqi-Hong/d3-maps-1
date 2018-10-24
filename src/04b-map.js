@@ -53,7 +53,7 @@ function ready(json) {
       } else if (d.properties.clinton < d.properties.trump) {
         return 'red'
       } else {
-        return '#666666'
+        return '#606060'
       }
     })
     .attr('opacity', d => {
